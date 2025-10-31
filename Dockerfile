@@ -1,10 +1,10 @@
-# Use a newer Jenkins LTS image with Java 17
+# Use a recent Jenkins LTS image with Java 17
 FROM jenkins/jenkins:2.462.3-jdk17
 
-# Switch to root to install extra packages
+# Switch to root to install system packages
 USER root
 
-# Install Docker CLI (so Jenkins jobs can run Docker commands)
+# Install required tools and Docker CLI
 RUN apt-get update && \
     apt-get install -y lsb-release curl python3-pip && \
     curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc https://download.docker.com/linux/debian/gpg && \
@@ -16,5 +16,6 @@ RUN apt-get update && \
 # Switch back to the Jenkins user
 USER jenkins
 
-# Install Blue Ocean and Docker workflow plugins
-RUN jenkins-plugin-cli --plugins "blueocean:1.27.16 docker-workflow:1.30"
+# Install Blue Ocean and Docker workflow plugins without specifying exact versions
+# This will automatically select versions compatible with Jenkins 2.462.3
+RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
